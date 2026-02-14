@@ -1,0 +1,14 @@
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+
+    <Sequence>
+      <ComputeRoute route="{route}" />
+
+      <!-- custom node or Python node that extracts poses -->
+      <ExtractRouteWaypoints route="{route}" poses="{poses}" />
+
+      <NavigateThroughPoses poses="{poses}" />
+    </Sequence>
+
+  </BehaviorTree>
+</root>
