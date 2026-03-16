@@ -26,6 +26,12 @@ def generate_launch_description():
         'warehouse_map.yaml'
     )
 
+    graph_file = os.path.join(
+        get_package_share_directory(package_name),
+        'config',
+        'warehouse_graph_fixed.geojson'
+    )
+
     lifecycle_nodes = [
     'map_server',
     'amcl',
@@ -75,7 +81,9 @@ def generate_launch_description():
                 package='nav2_route',
                 plugin='nav2_route::RouteServer',
                 name='route_server',
-                parameters=[params_file],
+                parameters=[params_file, {
+                    'graph_file': graph_file
+                }],
                 remappings=remappings,
             ),
 
