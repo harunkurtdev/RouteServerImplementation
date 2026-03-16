@@ -16,6 +16,7 @@ find_package(nav_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 
 install(
@@ -38,6 +39,7 @@ install(TARGETS
 ament_target_dependencies(planner_metric_node
   rclcpp
   nav_msgs
+  geometry_msgs
 )
 install(TARGETS
   controller_dynamics_node
@@ -50,7 +52,7 @@ ament_target_dependencies(controller_dynamics_node
 install(TARGETS
   joy_node
   DESTINATION lib/${PROJECT_NAME})
-ament_target_dependencies(joy_node rclcpp sensor_msgs)
+ament_target_dependencies(joy_node rclcpp sensor_msgs geometry_msgs)
 
 
 
