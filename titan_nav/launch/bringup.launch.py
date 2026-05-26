@@ -2,7 +2,7 @@
 
 from os.path import join
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
@@ -12,6 +12,13 @@ def generate_launch_description():
 
     titan_bot_path = get_package_share_directory("titan_nav")
     gz_sim_share = get_package_share_directory("ros_gz_sim")
+
+    import os
+    models_path = join(titan_bot_path, "models")
+    share_parent = os.path.dirname(titan_bot_path)
+    set_gz_resource_path = SetEnvironmentVariable(
+        "GZ_SIM_RESOURCE_PATH", models_path + ":" + share_parent
+    )
 
     world_file = LaunchConfiguration("world_file")
 
@@ -31,6 +38,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        set_gz_resource_path,
         DeclareLaunchArgument(
             "world_file",
             default_value=join(titan_bot_path, "worlds", "small_warehouse.world"),

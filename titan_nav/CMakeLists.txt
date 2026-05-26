@@ -25,32 +25,6 @@ install(
 
 
 
-add_executable(planner_metric_node src/planner_metric_node.cpp)
-add_executable(controller_dynamics_node src/controller_dynamics_node.cpp)
-add_executable(joy_node src/joy_node.cpp)
-
-
-
-install(TARGETS
-  planner_metric_node
-  DESTINATION lib/${PROJECT_NAME}
-)
-ament_target_dependencies(planner_metric_node
-  rclcpp
-  nav_msgs
-)
-install(TARGETS
-  controller_dynamics_node
-  DESTINATION lib/${PROJECT_NAME}
-)
-ament_target_dependencies(controller_dynamics_node
-  rclcpp
-  geometry_msgs
-)
-install(TARGETS
-  joy_node
-  DESTINATION lib/${PROJECT_NAME})
-ament_target_dependencies(joy_node rclcpp sensor_msgs)
 
 
 

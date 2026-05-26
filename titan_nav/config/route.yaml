@@ -21,6 +21,68 @@ controller_server:
     min_x_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
     failure_tolerance: 0.3
+    controller_plugins: ["FollowPath"]
+    FollowPath:
+      plugin: "dwb_core::DWBLocalPlanner"
+      min_vel_x: 0.0
+      min_vel_y: 0.0
+      max_vel_x: 0.5
+      max_vel_y: 0.0
+      max_vel_theta: 1.0
+      min_speed_xy: 0.0
+      max_speed_xy: 0.5
+      min_speed_theta: 0.0
+      acc_lim_x: 2.5
+      acc_lim_y: 0.0
+      acc_lim_theta: 3.2
+      decel_lim_x: -2.5
+      decel_lim_y: 0.0
+      decel_lim_theta: -3.2
+      vx_samples: 20
+      vy_samples: 5
+      vtheta_samples: 20
+      sim_time: 1.7
+      linear_granularity: 0.05
+      angular_granularity: 0.025
+      transform_tolerance: 0.2
+      short_circuit_trajectory_evaluation: true
+      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "ObstacleFootprint", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      BaseObstacle.scale: 0.5
+      ObstacleFootprint.scale: 0.5
+      PathAlign.scale: 32.0
+      PathAlign.forward_point_distance: 0.1
+      GoalAlign.scale: 24.0
+      GoalAlign.forward_point_distance: 0.1
+      PathDist.scale: 32.0
+      GoalDist.scale: 24.0
+      RotateToGoal.scale: 32.0
+
+
+planner_server:
+  ros__parameters:
+    use_sim_time: true
+    expected_planner_frequency: 20.0
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      tolerance: 0.5
+      use_astar: false
+      allow_unknown: true
+
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: true
+    costmap_topic: local_costmap/costmap_raw
+    footprint_topic: local_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["spin", "backup", "wait"]
+    spin:
+      plugin: "nav2_behaviors::Spin"
+    backup:
+      plugin: "nav2_behaviors::BackUp"
+    wait:
+      plugin: "nav2_behaviors::Wait"
 
 
 bt_navigator:
@@ -45,7 +107,7 @@ velocity_smoother:
 map_server:
   ros__parameters:
     use_sim_time: true
-    yaml_filename: "/home/gagasaga/titan_ws/src/titan_nav/config/warehouse_map.yaml"
+    yaml_filename: ""
 
 
 route_server:
@@ -54,7 +116,7 @@ route_server:
     global_frame: map
     route_frame: map
     base_frame: base_footprint
-    graph_file: /home/gagasaga/titan_ws/src/titan_nav/config/warehouse_graph_fixed.geojson
+    graph_file: ""
     max_node_search_radius: 3.0
     default_edge_cost: 1.0
 
@@ -134,8 +196,8 @@ local_costmap:
 
       # Rolling window
       rolling_window: true
-      width: 6.0
-      height: 6.0
+      width: 6
+      height: 6
       resolution: 0.05
 
       # Update / publish

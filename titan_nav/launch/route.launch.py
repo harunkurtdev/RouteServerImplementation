@@ -26,15 +26,21 @@ def generate_launch_description():
         'warehouse_map.yaml'
     )
 
+    graph_file = os.path.join(
+        get_package_share_directory(package_name),
+        'config',
+        'warehouse_graph_fixed.geojson'
+    )
+
     lifecycle_nodes = [
-    'map_server',
-    'amcl',
-    'global_costmap',
-    'local_costmap',
-    'controller_server',
-    'route_server',
-    'bt_navigator',
-    'velocity_smoother'
+        'map_server',
+        'amcl',
+        'planner_server',
+        'controller_server',
+        'behavior_server',
+        'route_server',
+        'bt_navigator',
+        'velocity_smoother',
     ]
 
 
@@ -72,10 +78,26 @@ def generate_launch_description():
             ),
 
             ComposableNode(
+                package='nav2_planner',
+                plugin='nav2_planner::PlannerServer',
+                name='planner_server',
+                parameters=[params_file],
+                remappings=remappings,
+            ),
+
+            ComposableNode(
+                package='nav2_behaviors',
+                plugin='behavior_server::BehaviorServer',
+                name='behavior_server',
+                parameters=[params_file],
+                remappings=remappings,
+            ),
+
+            ComposableNode(
                 package='nav2_route',
                 plugin='nav2_route::RouteServer',
                 name='route_server',
-                parameters=[params_file],
+                parameters=[params_file, {'graph_file': graph_file}],
                 remappings=remappings,
             ),
 
@@ -113,24 +135,6 @@ def generate_launch_description():
                 package='nav2_amcl',
                 plugin='nav2_amcl::AmclNode',
                 name='amcl',
-                parameters=[params_file],
-                remappings=remappings,
-            ),
-
-            # Global costmap
-            ComposableNode(
-                package='nav2_costmap_2d',
-                plugin='nav2_costmap_2d::Costmap2DROS',
-                name='global_costmap',
-                parameters=[params_file],
-                remappings=remappings,
-            ),
-
-            # Local costmap
-            ComposableNode(
-                package='nav2_costmap_2d',
-                plugin='nav2_costmap_2d::Costmap2DROS',
-                name='local_costmap',
                 parameters=[params_file],
                 remappings=remappings,
             ),

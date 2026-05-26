@@ -73,11 +73,18 @@ def generate_launch_description():
     )
 
     rviz_node = Node(
-    package='rviz2',
-    executable='rviz2',
-    arguments=['-d', join(titan_bot_path, 'config', 'titan3.rviz')]
-)
+        package='rviz2',
+        executable='rviz2',
+        arguments=['-d', join(titan_bot_path, 'config', 'titan3.rviz')]
+    )
 
+    # Bridge Gazebo's lidar frame to the URDF frame
+    lidar_frame_bridge = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=['0', '0', '0', '0', '0', '0',
+                   'Lidar_Link', 'titan_nav/base_footprint/lidar'],
+    )
 
     return LaunchDescription([
         DeclareLaunchArgument("position_x", default_value="0.0"),
@@ -85,5 +92,7 @@ def generate_launch_description():
         DeclareLaunchArgument("orientation_yaw", default_value="0.0"),
         DeclareLaunchArgument("odometry_source", default_value="world"),
         robot_state_publisher,
-        gz_spawn_entity, 
-        gz_ros2_bridge ])
+        gz_spawn_entity,
+        gz_ros2_bridge,
+        lidar_frame_bridge,
+        rviz_node ])
